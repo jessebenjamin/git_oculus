@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------
  * OCULEAP   ----------------------------------------------------------------
  * --------------------------------------------------------------------------
- * Proof of Concept for the Oculus Rift & Leap
+ * VR 3D Vertex Manipulation using Oculus Rift DK1 and Leap Motion Controller
  * https://github.com/jessebenjamin/git_oculus
  * --------------------------------------------------------------------------
  * prog:  Jesse Benjamin & Alexander Morosow / Interaction Design / BTK-FH/ http://btk-fh.de/
