@@ -1,97 +1,107 @@
-PVector normalHand[] = new PVector[2];
-
-PVector normalFingers[] = new PVector[5];
 
 PVector hand_position = new PVector();
+PVector newHandPos = new PVector();
+
+PVector hand_rotation = new PVector();
+PVector newHandRot = new PVector();
+
+PVector palm_position = new PVector();
+PVector newPalmPos = new PVector();
+
+PVector newFingerPos = new PVector();
+
+float[] fingerLength = new float[5];
+float[] maxFingerLength = new float[5];
+float[] relFingerLength = new float[5];
 
 void runHands() {
-
   pushMatrix();
-  translate(-0.1, 0, 1.5);
+  translate(-0.2, 0, 1.7);
   for (Hand hand : leap.getHands()) {
-    hand_position   = hand.getPosition();
-    PVector hand_direction   = hand.getDirection();
-    //println(hand.getDirection());
+    hand_position = hand.getPosition();
+    hand_rotation = hand.getDynamics();
+    palm_position = hand.getPalmPosition();
+
+    newHandPos = new PVector(
+    hand_position.x/((float)width)*.5, 
+    hand_position.y/((float)height)*-.5, 
+    hand_position.z /50.f * (-0.5) - 2.
+      );
+
+    newPalmPos = new PVector(
+    palm_position.x/((float)width)*.5, 
+    palm_position.y/((float)height)*-.5, 
+    palm_position.z /50.f * (-0.5) - 1.8
+      );
+
+    newHandRot = new PVector(
+    radians(hand_rotation.x), 
+    radians(hand_rotation.y), 
+    radians(hand_rotation.z)
+      );
+
+    // Draw the hand
     noFill();
     stroke(255);
-    beginShape();
+    strokeJoin(ROUND);
+
+    int i = 0;
+
     for (Finger finger : hand.getFingers()) {
-      vertex((hand_position.x/((float)width))*.5, (hand_position.y/((float)height))*-.5, (hand_position.z / 100.f) * (-0.5) - 2);
+
+
       PVector finger_pos = finger.getPosition();
-      vertex(finger_pos.x/ (float)width *.5, finger_pos.y/(float)width *-.5, finger_pos.z/ 100.f * -.5 - 2.);
+
+      newFingerPos = new PVector(
+      finger_pos.x/ (float)width *.5, 
+      finger_pos.y/ (float)width *-.5, 
+      finger_pos.z/ 50.f * -.5 - 2.
+        );
+
+      fingerLength[i] = finger.getLength();
+
+      if (maxFingerLength[i] < fingerLength[i]) {
+        maxFingerLength[i] = fingerLength[i];
+      }
+
+
+      relFingerLength[i] = maxFingerLength[i] - fingerLength[i];
+
+
+      beginShape(LINES);
+      vertex(newFingerPos.x, newFingerPos.y, newFingerPos.z);
+      vertex(newHandPos.x, newHandPos.y, newHandPos.z);
+      endShape();
+      i++;
     }
+
+    beginShape(LINES);
+    vertex(newPalmPos.x, newPalmPos.y, newPalmPos.z);
+    vertex(newHandPos.x, newHandPos.y, newHandPos.z);
     endShape();
+
+    println(newPalmPos + " Hand: " + newHandPos);
+
+    pushMatrix();
+    translate(newHandPos.x, newHandPos.y, newHandPos.z);
+    sphereDetail(6);
+    sphere(0.01);
+    popMatrix();
+
+    pushMatrix();
+    translate(newPalmPos.x, newPalmPos.y, newPalmPos.z);
+    sphereDetail(6);
+    sphere(0.01);
+    popMatrix();
   }
-  translate((hand_position.x/((float)width))*.5, (hand_position.y/((float)height))*-.5, (hand_position.z / 100.f) * (-0.5) - 2);
-  sphere(4);
+
+
   popMatrix();
 
-  //  updateHand();
-  //
-  //  for (Hand hand : leap.getHands()) {
-  //    noFill();
-  //
-  //    pushMatrix();
-  //    translate(-0.1, 0, 1.5);
-  //    stroke(255);
-  //    strokeWeight(3);
-  //    beginShape();
-  //    int fingers = hand.countFingers();
-  //    vertex(normalHand[0].x, normalHand[0].y, normalHand[0].z);
-  //    for (int x = 0; x < fingers; x++) {
-  //      vertex(normalFingers[x].x, normalFingers[x].y, normalFingers[x].z);
-  //    }
-  //    endShape();
-  //    popMatrix();
-  //  }
-}
-
-void updateHand() {
-
-  int handCount = leap.countHands();
-  ArrayList<Hand> hands = leap.getHands();
-  //println(hands.size());
-
-  //    for (int i = 0; i < handCount; i ++) {
-  if (handCount > 0) {
-    //println(hands);
-    Hand hand = hands.get(0);
-    //println(hand + " " + hands);
-
-    PVector hand_position = hand.getPosition();
-
-    normalHand[0].x = (hand_position.x / ((float)width)) * (0.5) ;
-    normalHand[0].y = (hand_position.y / ((float)height)) * (-0.5);
-    normalHand[0].z = (hand_position.z / 100.f) * (-0.5) - 2;
-
-    //println(normalHand[0]);
-
-
-    for (Finger finger : hand.getFingers()) {
-      PVector finger_pos = finger.getPosition();
-      int fingers = hand.countFingers();
-      for (int x = 0; x < fingers; x++) {
-        normalFingers[x].x = finger_pos.x * (.5);
-        normalFingers[x].y = finger_pos.y * (-.5);
-        normalFingers[x].z = finger_pos.z / 100. * (.5);
-      }
-    }
-    if (frameCount % 60 == 2) {
-      println(normalFingers);
-    }
-  } 
-  else {
-    println("No hand.");
-  }
-}
-
-void setupHands() {
-
-  normalHand[0] = new PVector();
-  normalHand[1] = new PVector();
-
-  for (int i = 0; i< normalFingers.length; i++) {
-    normalFingers[i] = new PVector();
-  }
+  aniTranslation = new PVector(
+  newHandPos.x, 
+  newHandPos.y, 
+  newHandPos.z
+    );
 }
 

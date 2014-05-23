@@ -1,27 +1,74 @@
+/* --------------------------------------------------------------------------
+ * OCULEAP   ----------------------------------------------------------------
+ * --------------------------------------------------------------------------
+ * Proof of Concept for the Oculus Rift & Leap
+ * https://github.com/jessebenjamin/git_oculus
+ * --------------------------------------------------------------------------
+ * prog:  Jesse Benjamin & Alexander Morosow / Interaction Design / BTK-FH/ http://btk-fh.de/
+ * date:  05/23/2014 (m/d/y)
+ *
+ * --------------------------------------------------------------------------
+ * REQUIREMENTS:
+ * --------------------------------------------------------------------------´
+ * 
+ *  • Oculus Rift DevKit 1
+ *  • Leap Motion Sensor & SDK
+ *  • Processing-Libraries (see below)
+ *  
+ * --------------------------------------------------------------------------
+ * HOW TO USE:
+ * --------------------------------------------------------------------------´
+ * 
+ *  1. Hold and move one hand over the Leap-Sensor to manipulate an object in space.
+ *  2. Use keys '1', '2' & '3' to alternate between objects.
+ *  3. Use key 'r' to reset the variables for Object 3.
+ *  4. Use key 'r' to reset the variables for Object 3.
+ *  5. Place two hands over the Leap-Sensor to freeze the objects.
+ *
+ */
+
+/* ----------------------------------------------------------------------------
+ *
+ * Processing library SimpleOculusRift Basic by Max Rheiner, 2014
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Processing library LeapMotionForProcessing by Darius Morawiec. (C) 2013
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Processing library OBJLoader by Saito, Matt Ditton, Ekene Ijeoma. (c) 2010
+ *
+ */
+
 import SimpleOculusRift.*;
 import de.voidplus.leapmotion.*;
+import saito.objloader.*;
+
 
 LeapMotion leap;
 
 SimpleOculusRift oculusRiftDev;
 
-float floorDist = 1.7;
-PVector aniRotation = new PVector();
+CoolShape shape;
 
-boolean fullScreen = false;
+float floorDist = 1.7;
+
+PVector aniTranslation = new PVector();
+
+
+int keyShape = 1;
 
 void setup() {
-  if (fullScreen)
-    size(1920, 1200, OPENGL);
-  else    
-    size(1280, 800, OPENGL);
+  size(1280, 800, OPENGL);
   
-  leap = new LeapMotion(this);
-  setupHands();
-  
+  hint(DISABLE_DEPTH_TEST);
   oculusRiftDev = new SimpleOculusRift(this, SimpleOculusRift.RenderQuality_Middle); 
-  oculusRiftDev.setBknColor(0,0,0);
-  
+  oculusRiftDev.setBknColor(0, 0, 0);
+
+  leap = new LeapMotion(this);
+  shape = new CoolShape(this);
+
   strokeWeight(1);
   smooth();
 }
@@ -30,32 +77,48 @@ void setup() {
 //Pass draw to library for barrel distortion etc
 void draw() {
   oculusRiftDev.draw();
+  if (leap.countHands() == 1)
+    shape.setValues(relFingerLength);
 } 
 
 //Draw for each eye
 void onDrawScene(int eye) {
 
-  drawGrid(new PVector(0, -floorDist, 0), 10, 10);
-  
-  runHands();
-  
+  drawGrid(new PVector(0, -floorDist, 0), 30, 30);
+  stroke(255, 127);
+  noFill();
+  sphereDetail(24);
+  sphere(100);
+  if (leap.countHands() == 1)
+    runHands();
+
   pushMatrix();  
-  stroke(0);
-  fill(255);
-  translate(0, 2, -3);
-  rotateX(aniRotation.y);
-  rotateY(aniRotation.x);
-  rotateZ(aniRotation.z);
-  sphere(1);
+  translate(-2+(aniTranslation.x*8.), 6+aniTranslation.y*12., 25.+(aniTranslation.z*15.));
+  rotateX(newHandRot.x);
+  rotateY(newHandRot.y);
+  rotateZ(newHandRot.z);
+  noFill();
+  stroke(color(255));
+  switch(keyShape) {
+  case 1:
+    box(3);
+    break;
+  case 2:
+    float sphereSize = 5.-constrain(abs(aniTranslation.y)*10., 1, 10);
+    sphereDetail(6);
+    sphere(sphereSize);
+    break;
+  case 3:
+    shape.tS.draw();
+    break;
+  }
+
   popMatrix();
 }
 
-boolean sketchFullScreen() {
-  return fullScreen;
-}     
-
 void drawGrid(PVector center, float length, int repeat) {
   pushMatrix();
+  stroke(255);
   translate(center.x, center.y, center.z);
   float pos;
 
@@ -70,5 +133,23 @@ void drawGrid(PVector center, float length, int repeat) {
     pos, 0, length*.5);
   }
   popMatrix();
+}
+
+void keyReleased() { 
+  if (key == '1') {
+    keyShape = 1;
+  } 
+  else if (key == '2') {
+    keyShape = 2;
+  }
+  else if (key == '3') {
+    keyShape = 3;
+  }
+
+  if (key == 'r' || key == 'R' || key == '3') {
+    for (int i = 0; i < maxFingerLength.length; i++) {
+      maxFingerLength[i] = 0;
+    }
+  }
 }
 
