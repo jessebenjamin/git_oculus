@@ -15,9 +15,12 @@ class Lissa {
   float buffer[][] = new float[2][BUFFERSIZE];
   float buffer1[][] = new float[2][BUFFERSIZE];
 
-  float scale;
+  float scaleX, scaleY, scaleZ;
 
-  Lissa(PApplet applet) {
+  Lissa(PApplet applet, float _scaleX, float _scaleY, float _scaleZ) {
+    scaleX = _scaleX;
+    scaleY = _scaleY;
+    scaleZ = _scaleZ;
     minim = new Minim(applet);
     in = minim.getLineIn(Minim.STEREO, BUFFERSIZE, SAMPLERATE, BITDEPTH);
   }
@@ -30,7 +33,7 @@ class Lissa {
     bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
     buffer1[0] = ease(buffer1[0], buffer[0], (in.mix.level()) / 6.f, .76f);
     buffer1[1] = ease(buffer1[1], buffer[1], (in.mix.level()) / 6.f, .76f);
-  }  
+  }
 
   void drawLissa() {
     update();
@@ -46,7 +49,7 @@ class Lissa {
     beginShape();
     for (int i = 0; i < BUFFERSIZE; i++) {
       strokeWeight(.5f + abs(buffer[1][i] - buffer[0][i]) * 6.f);
-      curveVertex(buffer1[0][i] * 4500.f * scale, buffer1[1][i] * 4500.f * scale, bufferm1[i] * 10000.f * scale);
+      curveVertex(buffer1[0][i] * scaleX, buffer1[1][i] * scaleY, bufferm1[i] * scaleZ);
     }
     endShape();
     popMatrix();
@@ -63,7 +66,6 @@ class Lissa {
         rb = abs(b[i] - b[i + 1]);
       } else
         rb = abs(b[i] - b[i - 1]);
-
       rb *= mult;
       rb += offset;
       out[i] = a[i] + (b[i] - a[i]) * rb;

@@ -10,15 +10,15 @@
  * --------------------------------------------------------------------------
  * REQUIREMENTS:
  * --------------------------------------------------------------------------´
- * 
+ *
  *  • Oculus Rift DevKit 1
  *  • Leap Motion Sensor & SDK
  *  • Processing-Libraries (see below)
- *  
+ *
  * --------------------------------------------------------------------------
  * HOW TO USE:
  * --------------------------------------------------------------------------´
- * 
+ *
  *  1. Hold and move one hand over the Leap-Sensor to manipulate an object in space.
  *  2. Use keys '1', '2' & '3' to alternate between objects.
  *  3. Use key 'r' to reset the variables for Object 3.
@@ -52,6 +52,8 @@ SimpleOculusRift oculusRiftDev;
 
 CoolShape shape;
 
+Lissa lissa;
+
 float floorDist = 1.7;
 
 PVector aniTranslation = new PVector();
@@ -61,13 +63,16 @@ int keyShape = 1;
 
 void setup() {
   size(1280, 800, OPENGL);
-  
+
   hint(DISABLE_DEPTH_TEST);
-  oculusRiftDev = new SimpleOculusRift(this, SimpleOculusRift.RenderQuality_Middle); 
+  oculusRiftDev = new SimpleOculusRift(this, SimpleOculusRift.RenderQuality_Middle);
   oculusRiftDev.setBknColor(0, 0, 0);
 
   leap = new LeapMotion(this);
   shape = new CoolShape(this);
+
+  // Lissa(PApplet applet, float _scaleX, float _scaleY, float _scaleZ)
+  lissa = new Lissa(this, 10, 10, 20);
 
   strokeWeight(1);
   smooth();
@@ -79,7 +84,7 @@ void draw() {
   oculusRiftDev.draw();
   if (leap.countHands() == 1)
     shape.setValues(relFingerLength);
-} 
+}
 
 //Draw for each eye
 void onDrawScene(int eye) {
@@ -92,7 +97,7 @@ void onDrawScene(int eye) {
   if (leap.countHands() == 1)
     runHands();
 
-  pushMatrix();  
+  pushMatrix();
   translate(-2+(aniTranslation.x*8.), 6+aniTranslation.y*12., 25.+(aniTranslation.z*15.));
   rotateX(newHandRot.x);
   rotateY(newHandRot.y);
@@ -111,6 +116,9 @@ void onDrawScene(int eye) {
   case 3:
     shape.tS.draw();
     break;
+  case 4:
+    lissa.drawLissa();
+    break;
   }
 
   popMatrix();
@@ -126,24 +134,27 @@ void drawGrid(PVector center, float length, int repeat) {
   {
     pos = -length *.5 + x * length / repeat;
 
-    line(-length*.5, 0, pos, 
+    line(-length*.5, 0, pos,
     length*.5, 0, pos);
 
-    line(pos, 0, -length*.5, 
+    line(pos, 0, -length*.5,
     pos, 0, length*.5);
   }
   popMatrix();
 }
 
-void keyReleased() { 
+void keyReleased() {
   if (key == '1') {
     keyShape = 1;
-  } 
+  }
   else if (key == '2') {
     keyShape = 2;
   }
   else if (key == '3') {
     keyShape = 3;
+  }
+  else if (key == '4') {
+    keyShape = 4;
   }
 
   if (key == 'r' || key == 'R' || key == '3') {
@@ -152,4 +163,3 @@ void keyReleased() {
     }
   }
 }
-
