@@ -41,7 +41,7 @@ class Lissa {
     strokeJoin(ROUND);
     strokeCap(ROUND);
     noFill();
-    stroke(0);
+    stroke(255);
 
     pushMatrix();
     rotateZ(-PI / 4.f);
