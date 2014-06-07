@@ -61,10 +61,13 @@ PVector aniTranslation = new PVector();
 
 int keyShape = 1;
 
+int alpha = 255;
+
 void setup() {
   size(1280, 800, OPENGL);
 
   hint(DISABLE_DEPTH_TEST);
+  hint(ENABLE_STROKE_PURE);
   oculusRiftDev = new SimpleOculusRift(this, SimpleOculusRift.RenderQuality_Middle);
   oculusRiftDev.setBknColor(0, 0, 0);
 
@@ -72,25 +75,37 @@ void setup() {
   shape = new CoolShape(this);
 
   // Lissa(PApplet applet, float _scaleX, float _scaleY, float _scaleZ)
-  lissa = new Lissa(this, 10, 10, 20);
+  lissa = new Lissa(this, 80, 80, 5);
 
-  strokeWeight(1);
+
   smooth();
 }
 
 
 //Pass draw to library for barrel distortion etc
 void draw() {
-  oculusRiftDev.draw();
-  if (leap.countHands() == 1)
+  if (leap.countHands() == 1) {
     shape.setValues(relFingerLength);
+  }
+
+  lissa.update();
+
+  oculusRiftDev.draw();
 }
 
 //Draw for each eye
 void onDrawScene(int eye) {
 
+  if (keyShape == 4) {
+    strokeWeight(1+lissa.in.mix.level()*2.f);
+    alpha = 255 - (int)(lissa.in.mix.level() * 255);
+  } else {
+    strokeWeight(1);
+    alpha = 255;
+  }
+
   drawGrid(new PVector(0, -floorDist, 0), 30, 30);
-  stroke(255, 127);
+  stroke(255, alpha / 2);
   noFill();
   sphereDetail(24);
   sphere(100);
@@ -126,18 +141,18 @@ void onDrawScene(int eye) {
 
 void drawGrid(PVector center, float length, int repeat) {
   pushMatrix();
-  stroke(255);
+  stroke(255, alpha);
   translate(center.x, center.y, center.z);
   float pos;
 
-  for (int x=0; x < repeat+1;x++)
+  for (int x=0; x < repeat+1; x++)
   {
     pos = -length *.5 + x * length / repeat;
 
-    line(-length*.5, 0, pos,
+    line(-length*.5, 0, pos, 
     length*.5, 0, pos);
 
-    line(pos, 0, -length*.5,
+    line(pos, 0, -length*.5, 
     pos, 0, length*.5);
   }
   popMatrix();
@@ -146,20 +161,19 @@ void drawGrid(PVector center, float length, int repeat) {
 void keyReleased() {
   if (key == '1') {
     keyShape = 1;
-  }
-  else if (key == '2') {
+  } else if (key == '2') {
     keyShape = 2;
-  }
-  else if (key == '3') {
+  } else if (key == '3') {
     keyShape = 3;
-  }
-  else if (key == '4') {
+  } else if (key == '4') {
     keyShape = 4;
+  } else if (keyCode == ' ' && keyShape == 4) {
+    lissa.play();
   }
-
   if (key == 'r' || key == 'R' || key == '3') {
     for (int i = 0; i < maxFingerLength.length; i++) {
       maxFingerLength[i] = 0;
     }
   }
 }
+

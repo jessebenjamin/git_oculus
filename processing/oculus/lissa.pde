@@ -1,7 +1,9 @@
 import ddf.minim.AudioInput;
+import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
 
 class Lissa {
+  public int ZTYPE = 1;
 
   public int BUFFERSIZE = 512;
   public float SAMPLERATE = 44100;
@@ -9,6 +11,9 @@ class Lissa {
 
   Minim minim;
   AudioInput in;
+
+  AudioPlayer player;
+  boolean playing = false;
 
   float bufferm[] = new float[BUFFERSIZE];
   float bufferm1[] = new float[BUFFERSIZE];
@@ -23,6 +28,7 @@ class Lissa {
     scaleZ = _scaleZ;
     minim = new Minim(applet);
     in = minim.getLineIn(Minim.STEREO, BUFFERSIZE, SAMPLERATE, BITDEPTH);
+    player = minim.loadFile("elixir.mp3");
   }
 
   void update() {
@@ -36,7 +42,6 @@ class Lissa {
   }
 
   void drawLissa() {
-    update();
     shapeMode(CENTER);
     strokeJoin(ROUND);
     strokeCap(ROUND);
@@ -44,12 +49,13 @@ class Lissa {
     stroke(255);
 
     pushMatrix();
+    /*
     rotateZ(-PI / 4.f);
-    rotateY(PI / 8.f);
+     rotateY(PI / 8.f);*/
     beginShape();
     for (int i = 0; i < BUFFERSIZE; i++) {
       strokeWeight(.5f + abs(buffer[1][i] - buffer[0][i]) * 6.f);
-      curveVertex(buffer1[0][i] * scaleX, buffer1[1][i] * scaleY, bufferm1[i] * scaleZ);
+      curveVertex(buffer1[0][i] * scaleX, buffer1[1][i] * scaleY, (((float)i / BUFFERSIZE)-.5f)*scaleZ);
     }
     endShape();
     popMatrix();
@@ -72,4 +78,14 @@ class Lissa {
     }
     return out;
   }
+
+  public void play() {
+    if (!player.isPlaying())
+      player.play();
+    else {
+      player.pause();
+      player.rewind();
+    }
+  }
 }
+
