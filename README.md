@@ -27,12 +27,12 @@ HOW TO USE:
 The 4th mode is a music visualizer.
 It works on the principle of Lissajous figures - drawing phase differences in the signal of the incoming audio.
 
-For the 4th mode to work, you need to select a two channel audio input as the system input.
+Try pressing the spacebar when in mode 4. for a proposed track ;)
+
+Else, for the 4th mode to work, you need to select a two channel audio input as the system input.
 
 I suggest using Soundflower to route the system audio to the input.
 Soundflowerbed lets you send the signal to an output as well.
-
-Try pressing the spacebar when in mode 4. for a proposed track ;)
 
 ----------------------------------------------------------------------------
 
