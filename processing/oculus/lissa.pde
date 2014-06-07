@@ -31,14 +31,27 @@ class Lissa {
     player = minim.loadFile("elixir.mp3");
   }
 
-  void update() {
-    bufferm = in.mix.toArray();
-    buffer[0] = in.left.toArray();
-    buffer[1] = in.right.toArray();
+  void update(int mode) {
+    switch(mode) {
+    case 0:
+      bufferm = in.mix.toArray();
+      buffer[0] = in.left.toArray();
+      buffer[1] = in.right.toArray();
 
-    bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
-    buffer1[0] = ease(buffer1[0], buffer[0], (in.mix.level()) / 6.f, .76f);
-    buffer1[1] = ease(buffer1[1], buffer[1], (in.mix.level()) / 6.f, .76f);
+      bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
+      buffer1[0] = ease(buffer1[0], buffer[0], (in.mix.level()) / 6.f, .76f);
+      buffer1[1] = ease(buffer1[1], buffer[1], (in.mix.level()) / 6.f, .76f);
+      break;
+    case 1:
+      bufferm = in.mix.toArray();
+      buffer[0] = in.left.toArray();
+      buffer[1] = in.right.toArray();
+
+      bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
+      buffer1[0] = ease(buffer1[0], buffer[0], (in.mix.level()) / 6.f, .76f);
+      buffer1[1] = ease(buffer1[1], buffer[1], (in.mix.level()) / 6.f, .76f);
+      break;
+    }
   }
 
   void drawLissa() {
