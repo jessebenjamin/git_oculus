@@ -5,9 +5,11 @@ import ddf.minim.Minim;
 class Lissa {
   public int ZTYPE = 1;
 
-  public int BUFFERSIZE = 512;
+  public int BUFFERSIZE = 256;
   public float SAMPLERATE = 44100;
   public int BITDEPTH = 16;
+
+  public int inputMode = 0;
 
   Minim minim;
   AudioInput in;
@@ -31,23 +33,23 @@ class Lissa {
     player = minim.loadFile("elixir.mp3");
   }
 
-  void update(int mode) {
-    switch(mode) {
+  void update() {
+    switch(inputMode) {
     case 0:
-      bufferm = in.mix.toArray();
+      //bufferm = in.mix.toArray();
       buffer[0] = in.left.toArray();
       buffer[1] = in.right.toArray();
 
-      bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
+      //bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
       buffer1[0] = ease(buffer1[0], buffer[0], (in.mix.level()) / 6.f, .76f);
       buffer1[1] = ease(buffer1[1], buffer[1], (in.mix.level()) / 6.f, .76f);
       break;
     case 1:
-      bufferm = in.mix.toArray();
-      buffer[0] = in.left.toArray();
-      buffer[1] = in.right.toArray();
+      //bufferm = player.mix.toArray();
+      buffer[0] = player.left.toArray();
+      buffer[1] = player.right.toArray();
 
-      bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
+      //bufferm1 = ease(bufferm1, bufferm, (in.mix.level()) / 6.f, .76f);
       buffer1[0] = ease(buffer1[0], buffer[0], (in.mix.level()) / 6.f, .76f);
       buffer1[1] = ease(buffer1[1], buffer[1], (in.mix.level()) / 6.f, .76f);
       break;
@@ -60,15 +62,15 @@ class Lissa {
     strokeCap(ROUND);
     noFill();
     stroke(255);
-
     pushMatrix();
-    /*
-    rotateZ(-PI / 4.f);
-     rotateY(PI / 8.f);*/
     beginShape();
     for (int i = 0; i < BUFFERSIZE; i++) {
-      strokeWeight(.5f + abs(buffer[1][i] - buffer[0][i]) * 6.f);
-      curveVertex(buffer1[0][i] * scaleX, buffer1[1][i] * scaleY, (((float)i / BUFFERSIZE)-.5f)*scaleZ);
+      float d = buffer[0][i] - buffer[1][i];
+      strokeWeight(1.f + abs(d) * 3.f);
+      float x = buffer1[0][i] * scaleX;
+      float y = buffer1[1][i] * scaleY;
+      float z = (((float)i / BUFFERSIZE)-.5f + d / 10.f) *scaleZ;
+      curveVertex(x, y, z);
     }
     endShape();
     popMatrix();
@@ -93,12 +95,20 @@ class Lissa {
   }
 
   public void play() {
-    if (!player.isPlaying())
+    if (!player.isPlaying()) {
       player.play();
-    else {
+      inputMode = 1;
+    } else {
       player.pause();
       player.rewind();
+      inputMode = 0;
     }
+  }
+
+  public int getWorldAlpha() {
+    if (player.isPlaying())
+      return 255 - (int)(player.mix.level() * 255);
+    else return 255 - (int)(lissa.in.mix.level() * 255);
   }
 }
 

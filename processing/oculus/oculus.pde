@@ -63,11 +63,13 @@ int keyShape = 1;
 
 int alpha = 255;
 
+PImage noCurse;
+
 void setup() {
   size(1280, 800, OPENGL);
 
   hint(DISABLE_DEPTH_TEST);
-  hint(ENABLE_STROKE_PURE);
+  
   oculusRiftDev = new SimpleOculusRift(this, SimpleOculusRift.RenderQuality_Middle);
   oculusRiftDev.setBknColor(0, 0, 0);
 
@@ -75,10 +77,12 @@ void setup() {
   shape = new CoolShape(this);
 
   // Lissa(PApplet applet, float _scaleX, float _scaleY, float _scaleZ)
-  lissa = new Lissa(this, 80, 80, 5);
-
+  lissa = new Lissa(this, 50, 50, 5);
 
   smooth();
+  
+  noCurse = loadImage("noCursor.png");
+  cursor(noCurse);
 }
 
 
@@ -98,7 +102,7 @@ void onDrawScene(int eye) {
 
   if (keyShape == 4) {
     strokeWeight(1+lissa.in.mix.level()*2.f);
-    alpha = 255 - (int)(lissa.in.mix.level() * 255);
+    alpha = lissa.getWorldAlpha();
   } else {
     strokeWeight(1);
     alpha = 255;
@@ -175,5 +179,11 @@ void keyReleased() {
       maxFingerLength[i] = 0;
     }
   }
+  cursor(noCurse);
+}
+
+
+public void mouseMoved() {
+  cursor(noCurse);
 }
 
