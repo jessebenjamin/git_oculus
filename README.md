@@ -10,20 +10,29 @@ date:  05/23/2014 (m/d/y)
 REQUIREMENTS:
 --------------------------------------------------------------------------
 
-• Oculus Rift DevKit 1
-• Leap Motion Sensor & SDK
-• Processing-Libraries (see below)
+- Oculus Rift DevKit 1
+- Leap Motion Sensor & SDK
+- Processing-Libraries (see below)
+- Stereo audio input
   
 --------------------------------------------------------------------------
 HOW TO USE:
 --------------------------------------------------------------------------
 
 1. Hold and move one hand over the Leap-Sensor to manipulate an object in space.
-2. Use keys '1', '2' & '3' to alternate between objects.
+2. Use keys '1', '2', '3' & '4' to alternate between objects.
 3. Use key 'r' to reset the variables for Object 3.
-4. Use key 'r' to reset the variables for Object 3.
-5. Place two hands over the Leap-Sensor to freeze the objects.
+4. Place two hands over the Leap-Sensor to freeze the objects.
 
+The 4th mode is a music visualizer.
+It works on the principle of Lissajous figures - drawing phase differences in the signal of the incoming audio.
+
+Try pressing the spacebar when in mode 4. for a proposed track ;)
+
+Else, for the 4th mode to work, you need to select a two channel audio input as the system input.
+
+I suggest using Soundflower to route the system audio to the input.
+Soundflowerbed lets you send the signal to an output as well.
 
 ----------------------------------------------------------------------------
 

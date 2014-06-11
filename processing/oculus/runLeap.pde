@@ -1,3 +1,4 @@
+boolean debug = false;
 
 PVector hand_position = new PVector();
 PVector newHandPos = new PVector();
@@ -79,7 +80,8 @@ void runHands() {
     vertex(newPalmPos.x, newPalmPos.y, newPalmPos.z);
     vertex(newHandPos.x, newHandPos.y, newHandPos.z);
     endShape();
-
+    
+    if(debug)
     println(newPalmPos + " Hand: " + newHandPos);
 
     pushMatrix();
