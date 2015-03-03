@@ -1,7 +1,10 @@
 OCULEAP
 ==========
 VR 3D Vertex Manipulation using Oculus Rift DK1 and Leap Motion Controller
-https://github.com/jessebenjamin/git_oculus
+
+![Image](http://forum.processing.org/two/uploads/imageupload/380/ZP852KOSNV46.png)
+![Image](http://forum.processing.org/two/uploads/imageupload/637/JW60LN7R283E.png)
+![Image](http://forum.processing.org/two/uploads/imageupload/728/QUN3AORC71EL.png)
 --------------------------------------------------------------------------
 prog:  Jesse Benjamin & Alexander Morosow / Interaction Design / BTK-FH/ http://btk-fh.de/
 date:  05/23/2014 (m/d/y)
@@ -31,7 +34,7 @@ Try pressing the spacebar when in mode 4. for a proposed track ;)
 
 Else, for the 4th mode to work, you need to select a two channel audio input as the system input.
 
-I suggest using Soundflower to route the system audio to the input.
+We suggest using Soundflower to route the system audio to the input.
 Soundflowerbed lets you send the signal to an output as well.
 
 ----------------------------------------------------------------------------
